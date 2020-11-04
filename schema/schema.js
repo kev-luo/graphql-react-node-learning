@@ -6,9 +6,9 @@ const _ = require('lodash');
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt } = graphql; // destructuring
 
 const dummyDataBooks = [
-  {name: 'Name of the Wind', genre: 'Fantasy', id: '1'},
-  {name: 'The Final Empire', genre: 'Fantasy', id: '2'},
-  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3'}
+  {name: 'Name of the Wind', genre: 'Fantasy', id: '1', authorId: '1'},
+  {name: 'The Final Empire', genre: 'Fantasy', id: '2', authorId: '2'},
+  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3', authorId: '3'}
 ];
 
 const dummyDataAuthors =  [
@@ -21,25 +21,28 @@ const dummyDataAuthors =  [
 const BookType = new GraphQLObjectType({ 
   name: 'Book',
   // fields is a fxn. fields will be things like name, genre, id, etc. this needs to be a fxn because when we start defining multiple types and they have references to one another, one type might not know what another type is unless the fields of all the different types are wrapped within a fxn. the function returns an object
-  fields: () => (
-    { 
+  fields: () => ({ 
       id: { type: GraphQLID }, // allows flexibility with id, you can pass it as a string or integer
       name: { type: GraphQLString },
       genre: { type: GraphQLString },
-    }
-  )
+      author: {
+        type: AuthorType,
+        resolve(parent, args) { // the parent data contains the info of the book we queried for. that info can contain the authorId which we can use to reference the authors data
+          console.log(parent);
+          return _.find(dummyDataAuthors, { id: parent.authorId })
+        }
+      }
+    })
 });
 
 const AuthorType = new GraphQLObjectType({
   name: 'Author',
-  fields: () => (
-    {
+  fields: () => ({
       id: { type: GraphQLID },
       name: { type: GraphQLString },
       age: { type: GraphQLInt }
-    }
-  )
-})
+    })
+});
 
 // the RootQuery fields defines the options we can use to initially jump into the graph
 const RootQuery = new GraphQLObjectType({
