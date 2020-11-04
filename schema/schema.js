@@ -1,8 +1,15 @@
 const graphql = require('graphql');
+const _ = require('lodash');
 
 // schema files define types (eg BookType), relationships between types, and defining root queries (defines how we initially get into the graph to grab data)
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql; // destructuring
+
+const dummyData = [
+  {name: 'Name of the Wind', genre: 'Fantasy', id: '1'},
+  {name: 'The Final Empire', genre: 'Fantasy', id: '2'},
+  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3'}
+];
 
 // this is a fxn that takes in an object that defines the BookType. this will be the first object type in our 'graph'. each book will have an id, name, and genre field
 const BookType = new GraphQLObjectType({ 
@@ -15,7 +22,7 @@ const BookType = new GraphQLObjectType({
       genre: { type: GraphQLString },
     }
   )
-})
+});
 
 // the RootQuery fields defines the options we can use to initially jump into the graph
 const RootQuery = new GraphQLObjectType({
@@ -29,13 +36,15 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLString }
       }, 
       // code to get data from db/other source. parent will come into play when we look at relationships between data types
+      // the args defined above can be accessed inside the resolve fxn using dot notation (eg args.id). so when a book query is received, the resolve fxn will be called and inside is where we write code to search the db/other source
       resolve(parent, args) {
-
+        return _.find(books, { id: args.id });
       }
     }
   }
-})
+});
 
+// creates new graphql schema and defining which query we're allowing the user to use when they're making queries from the front end
 module.exports = new GraphQLSchema({
   query: RootQuery
-})
+});
