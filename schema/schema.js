@@ -3,12 +3,15 @@ const _ = require('lodash');
 
 // schema files define types (eg BookType), relationships between types, and defining root queries (defines how we initially get into the graph to grab data)
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt } = graphql; // destructuring
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList } = graphql; // destructuring
 
 const dummyDataBooks = [
   {name: 'Name of the Wind', genre: 'Fantasy', id: '1', authorId: '1'},
   {name: 'The Final Empire', genre: 'Fantasy', id: '2', authorId: '2'},
-  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3', authorId: '3'}
+  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3', authorId: '3'},
+  {name: 'The Hero of Ages', genre: 'Fantasy', id: '4', authorId: '2'},
+  {name: 'The Colour of Magic', genre: 'Fantasy', id: '5', authorId: '3'},
+  {name: 'The Light Fantastic', genre: 'Fantasy', id: '6', authorId: '3'}
 ];
 
 const dummyDataAuthors =  [
@@ -40,7 +43,13 @@ const AuthorType = new GraphQLObjectType({
   fields: () => ({
       id: { type: GraphQLID },
       name: { type: GraphQLString },
-      age: { type: GraphQLInt }
+      age: { type: GraphQLInt },
+      books: {
+        type: new GraphQLList(AuthorType),
+        resolve(parent, args) {
+          return _.filter(dummyDataBooks, { authorId: parent.id })
+        }
+      }
     })
 });
 
