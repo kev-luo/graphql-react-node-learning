@@ -18,7 +18,7 @@ const BookType = new GraphQLObjectType({
       author: {
         type: AuthorType,
         resolve(parent, args) { // the parent data contains the info of the book we queried for. that info can contain the authorId which we can use to reference the authors data
-          // return _.find(dummyDataAuthors, { id: parent.authorId })
+          return Author.findById(parent.AuthorId);
         }
       }
     })
@@ -33,7 +33,7 @@ const AuthorType = new GraphQLObjectType({
       books: {
         type: new GraphQLList(BookType),
         resolve(parent, args) {
-          // return _.filter(dummyDataBooks, { authorId: parent.id })
+          return Book.find({ authorId: parent.id })
         }
       }
     })
@@ -53,13 +53,13 @@ const RootQuery = new GraphQLObjectType({
       // code to get data from db/other source. parent will come into play when we look at relationships between data types
       // the args defined above can be accessed inside the resolve fxn using dot notation (eg args.id). so when a book query is received, the resolve fxn will be called and inside is where we write code to search the db/other source
       resolve(parent, args) {
-        // return _.find(dummyDataBooks, { id: args.id });
+        return Book.findById(args.id);
       }
     },
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
-        // return dummyDataBooks;
+        return Book.find({});
       }
     },
     author: {
@@ -68,19 +68,51 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLID }
       },
       resolve(parent, args) {
-        // return _.find(dummyDataAuthors, { id: args.id });
+        return Author.findById(args.id);
       }
     },
     authors: {
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
-        // return dummyDataAuthors;
+        return Author.find({});
       }
     }
   }
 });
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutate',
+  fields: {
+    addAuthor: {
+      type: AuthorType,
+      args: {
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt }
+      },
+      resolve(parent, args) {
+        let author = new Author({
+          name: args.name,
+          age: args.age
+        })
+        return author.save();
+      }
+    },
+    addBook: {
+      type: BookType,
+      args: {
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        authorId: { type: GraphQLID }
+      },
+      resolve(parent, args) {
+        return Book(args).save();
+      }
+    }
+  }
+})
+
 // creates new graphql schema and defining which query we're allowing the user to use when they're making queries from the front end
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
