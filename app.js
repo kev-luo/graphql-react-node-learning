@@ -6,9 +6,12 @@ const schema = require('./schema/schema');
 const mongoose = require('mongoose');
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('connected to mongodb atlas'))
-  .catch(err => console.log(`error: ${err}`))
+mongoose.connect(process.env.MONGODB_URI, { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+})
+.then(() => console.log('connected to mongodb atlas'))
+.catch(err => console.log(`error: ${err}`))
 
 // schema used to map out the graph when someone makes a request to '/graphql'
 app.use('/graphql', graphqlHTTP({

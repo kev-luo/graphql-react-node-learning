@@ -1,24 +1,11 @@
 const graphql = require('graphql');
 const _ = require('lodash');
+const Book = require('../models/book');
+const Author = require('../models/author');
 
 // schema files define types (eg BookType), relationships between types, and defining root queries (defines how we initially get into the graph to grab data)
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList } = graphql; // destructuring
-
-const dummyDataBooks = [
-  {name: 'Name of the Wind', genre: 'Fantasy', id: '1', authorId: '1'},
-  {name: 'The Final Empire', genre: 'Fantasy', id: '2', authorId: '2'},
-  {name: 'The Long Earth', genre: 'Sci-Fi', id: '3', authorId: '3'},
-  {name: 'The Hero of Ages', genre: 'Fantasy', id: '4', authorId: '2'},
-  {name: 'The Colour of Magic', genre: 'Fantasy', id: '5', authorId: '3'},
-  {name: 'The Light Fantastic', genre: 'Fantasy', id: '6', authorId: '3'}
-];
-
-const dummyDataAuthors =  [
-  {name: 'Patrick Rothfuss', age: 44, id:"1"},
-  {name: 'Brandon Sanderson', age: 42, id:"2"},
-  {name: 'Terry Pratchett', age: 66, id:"3"},
-]
 
 // this is a fxn that takes in an object that defines the BookType. this will be the first object type in our 'graph'. each book will have an id, name, and genre field
 const BookType = new GraphQLObjectType({ 
@@ -31,8 +18,7 @@ const BookType = new GraphQLObjectType({
       author: {
         type: AuthorType,
         resolve(parent, args) { // the parent data contains the info of the book we queried for. that info can contain the authorId which we can use to reference the authors data
-          console.log(parent);
-          return _.find(dummyDataAuthors, { id: parent.authorId })
+          // return _.find(dummyDataAuthors, { id: parent.authorId })
         }
       }
     })
@@ -47,7 +33,7 @@ const AuthorType = new GraphQLObjectType({
       books: {
         type: new GraphQLList(BookType),
         resolve(parent, args) {
-          return _.filter(dummyDataBooks, { authorId: parent.id })
+          // return _.filter(dummyDataBooks, { authorId: parent.id })
         }
       }
     })
@@ -67,13 +53,13 @@ const RootQuery = new GraphQLObjectType({
       // code to get data from db/other source. parent will come into play when we look at relationships between data types
       // the args defined above can be accessed inside the resolve fxn using dot notation (eg args.id). so when a book query is received, the resolve fxn will be called and inside is where we write code to search the db/other source
       resolve(parent, args) {
-        return _.find(dummyDataBooks, { id: args.id });
+        // return _.find(dummyDataBooks, { id: args.id });
       }
     },
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
-        return dummyDataBooks;
+        // return dummyDataBooks;
       }
     },
     author: {
@@ -82,13 +68,13 @@ const RootQuery = new GraphQLObjectType({
         id: { type: GraphQLID }
       },
       resolve(parent, args) {
-        return _.find(dummyDataAuthors, { id: args.id });
+        // return _.find(dummyDataAuthors, { id: args.id });
       }
     },
     authors: {
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
-        return dummyDataAuthors;
+        // return dummyDataAuthors;
       }
     }
   }
