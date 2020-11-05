@@ -1,47 +1,44 @@
 import { gql } from 'apollo-boost';
 
-const getBooksQuery = gql`
+const getProjectsQuery = gql`
 {
-  books {
+  projects {
     name
+    description
     id
   }
 }
 `
-
-const getAuthorsQuery = gql`
+const getSkillsQuery = gql`
   {
-    authors {
+    skills {
       name
       id
     }
   }
 `
-
-const addProjectMutation = gql`
-  mutation($name: String!, $genre: String!, $authorId: ID!) {
-    addBook(name:$name, genre:$genre, authorId:$authorId) {
+const getProjectQuery = gql`
+query($id: ID) {
+  project(id: $id) {
+    id
+    name
+    description
+    skills {
       name
-      id
-    }
-  }
-`
-const getBookQuery = gql`
-  query($id: ID) {
-    book(id: $id) {
-      id
-      genre
-      author {
-        id
+      projects {
         name
-        age
-        books {
-          name
-          id
-        }
+        id
       }
     }
   }
+}
 `
-
-export { getAuthorsQuery, getBooksQuery, addProjectMutation, getBookQuery };
+// const addProjectMutation = gql`
+//   mutation($name: String!, $genre: String!, $authorId: ID!) {
+//     addBook(name:$name, genre:$genre, authorId:$authorId) {
+//       name
+//       id
+//     }
+//   }
+// `
+export { getProjectsQuery, getSkillsQuery, getProjectQuery };

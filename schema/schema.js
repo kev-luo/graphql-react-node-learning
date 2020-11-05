@@ -8,33 +8,31 @@ const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, 
 const SkillType = new GraphQLObjectType({ 
   name: 'Skill',
   fields: () => ({ 
-      id: { type: GraphQLID }, 
-      name: { type: GraphQLString },
-      projects: {
-        type: new GraphQLList(ProjectType),
-// TODO:
-        resolve(parent, args) { 
-          let id = parent.id;
-          return Skill.find({});
-        }
+    id: { type: GraphQLID }, 
+    name: { type: GraphQLString },
+    projects: {
+      type: new GraphQLList(ProjectType),
+      resolve(parent, args) { 
+        return Project.find({ skillIds: parent.id });
       }
-    })
+    }
+  })
 });
 
 const ProjectType = new GraphQLObjectType({
   name: 'Project',
   fields: () => ({
-      id: { type: GraphQLID },
-      name: { type: GraphQLString },
-      description: { type: GraphQLString },
-      skillIds: { type: new GraphQLList(GraphQLID)},
-      skills: {
-        type: new GraphQLList(SkillType),
-        resolve(parent, args) {
-          return Skill.find( {_id : { $in : parent.skillIds }})
-        }
+    id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    description: { type: GraphQLString },
+    skillIds: { type: new GraphQLList(GraphQLID)},
+    skills: {
+      type: new GraphQLList(SkillType),
+      resolve(parent, args) {
+        return Skill.find( {_id : { $in : parent.skillIds }})
       }
-    })
+    }
+  })
 });
 
 const RootQuery = new GraphQLObjectType({
