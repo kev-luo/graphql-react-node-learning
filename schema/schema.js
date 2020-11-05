@@ -1,80 +1,73 @@
 const graphql = require('graphql');
 const _ = require('lodash');
-const Book = require('../models/book');
-const Author = require('../models/author');
+const Project = require('../models/project');
+const Skill = require('../models/skill');
 
-// schema files define types (eg BookType), relationships between types, and defining root queries (defines how we initially get into the graph to grab data)
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull } = graphql;
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull } = graphql; // destructuring
-
-// this is a fxn that takes in an object that defines the BookType. this will be the first object type in our 'graph'. each book will have an id, name, and genre field
-const BookType = new GraphQLObjectType({ 
-  name: 'Book',
-  // fields is a fxn. fields will be things like name, genre, id, etc. this needs to be a fxn because when we start defining multiple types and they have references to one another, one type might not know what another type is unless the fields of all the different types are wrapped within a fxn. the function returns an object
+const SkillType = new GraphQLObjectType({ 
+  name: 'Skill',
   fields: () => ({ 
-      id: { type: GraphQLID }, // allows flexibility with id, you can pass it as a string or integer
+      id: { type: GraphQLID }, 
       name: { type: GraphQLString },
-      genre: { type: GraphQLString },
-      author: {
-        type: AuthorType,
-        resolve(parent, args) { // the parent data contains the info of the book we queried for. that info can contain the authorId which we can use to reference the authors data
-          return Author.findById(parent.AuthorId);
+      projects: {
+        type: new GraphQLList(ProjectType),
+// TODO:
+        resolve(parent, args) { 
+          let id = parent.id;
+          return Skill.find({});
         }
       }
     })
 });
 
-const AuthorType = new GraphQLObjectType({
-  name: 'Author',
+const ProjectType = new GraphQLObjectType({
+  name: 'Project',
   fields: () => ({
       id: { type: GraphQLID },
       name: { type: GraphQLString },
-      age: { type: GraphQLInt },
-      books: {
-        type: new GraphQLList(BookType),
+      description: { type: GraphQLString },
+      skillIds: { type: new GraphQLList(GraphQLID)},
+      skills: {
+        type: new GraphQLList(SkillType),
         resolve(parent, args) {
-          return Book.find({ authorId: parent.id })
+          return Skill.find( {_id : { $in : parent.skillIds }})
         }
       }
     })
 });
 
-// the RootQuery fields defines the options we can use to initially jump into the graph
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
-  // each of the fields will be a type of root query (eg grabbing one book, one author, multiple books, multiple authors, etc)
   fields: { 
-    book: {
-      type: BookType,
-      // when we query for 'book' we need to pass along an argument. in this case an id that will be a graphql string
+    skill: {
+      type: SkillType,
       args: {
         id: { type: GraphQLID }
       }, 
-      // code to get data from db/other source. parent will come into play when we look at relationships between data types
-      // the args defined above can be accessed inside the resolve fxn using dot notation (eg args.id). so when a book query is received, the resolve fxn will be called and inside is where we write code to search the db/other source
       resolve(parent, args) {
-        return Book.findById(args.id);
+        return Skill.findById(args.id);
       }
     },
-    books: {
-      type: new GraphQLList(BookType),
+    skills: {
+      type: new GraphQLList(SkillType),
       resolve(parent, args) {
-        return Book.find({});
+        return Skill.find({});
       }
     },
-    author: {
-      type: AuthorType,
+    project: {
+      type: ProjectType,
       args: {
         id: { type: GraphQLID }
       },
       resolve(parent, args) {
-        return Author.findById(args.id);
+        return Project.findById(args.id);
       }
     },
-    authors: {
-      type: new GraphQLList(AuthorType),
+    projects: {
+      type: new GraphQLList(ProjectType),
       resolve(parent, args) {
-        return Author.find({});
+        return Project.find({});
       }
     }
   }
@@ -83,35 +76,34 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
   name: 'Mutate',
   fields: {
-    addAuthor: {
-      type: AuthorType,
+    addProject: {
+      type: ProjectType,
       args: {
         name: { type: new GraphQLNonNull(GraphQLString) },
-        age: { type: new GraphQLNonNull(GraphQLInt) }
+        description: { type: new GraphQLNonNull(GraphQLString) },
+        skillIds: { type: new GraphQLNonNull(new GraphQLList(GraphQLID))}
       },
       resolve(parent, args) {
-        let author = new Author({
+        let project = new Project({
           name: args.name,
-          age: args.age
+          description: args.description,
+          skillIds: args.skillIds
         })
-        return author.save();
+        return project.save();
       }
     },
-    addBook: {
-      type: BookType,
+    addSkill: {
+      type: SkillType,
       args: {
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        genre: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: { type: new GraphQLNonNull(GraphQLID) }
+        name: { type: new GraphQLNonNull(GraphQLString) }
       },
       resolve(parent, args) {
-        return Book(args).save();
+        return Skill(args).save();
       }
     }
   }
 })
 
-// creates new graphql schema and defining which query we're allowing the user to use when they're making queries from the front end
 module.exports = new GraphQLSchema({
   query: RootQuery,
   mutation: Mutation
