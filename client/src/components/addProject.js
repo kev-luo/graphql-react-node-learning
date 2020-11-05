@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo';
 import { flowRight as compose } from 'lodash';
-import { getAuthorsQuery, addProjectMutation, getBooksQuery } from '../queries/queries';
+import { getSkillsQuery, addProjectMutation, getBooksQuery } from '../queries/queries';
 
 class addProject extends Component {
   constructor(props){
@@ -36,7 +36,6 @@ class addProject extends Component {
       },
       refetchQueries: [{ query: getBooksQuery }]
     })
-    
   }
 
   render() {

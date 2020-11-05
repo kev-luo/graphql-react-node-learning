@@ -3,7 +3,6 @@ import { ApolloProvider } from 'react-apollo';
 
 // components
 import Portfolio from './components/portfolio';
-import AddProject from './components/addProject';
 
 // apollo client setup
 const client = new ApolloClient({
@@ -16,7 +15,6 @@ function App() {
     <div id="main">
       <h1>Kevin Luo Portfolio</h1>
       <Portfolio />
-      <AddProject />
     </div>
     </ApolloProvider>
   );

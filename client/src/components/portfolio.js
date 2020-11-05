@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo';
-import { getBooksQuery } from '../queries/queries';
+import { getProjectsQuery } from '../queries/queries';
 
 // components
 import Details from './details';
@@ -13,14 +13,16 @@ class portfolio extends Component {
     }
   }
 
-  displayBooks() {
+  displayProjects() {
     let data = this.props.data;
     if(data.loading) {
       return (<div>Loading projects...</div>)
     } else {
-      return data.books.map(book => {
+      return data.projects.map(project => {
         return (
-          <li key={ book.id } onClick={ e => { this.setState({ selected: book.id })}}>{ book.name }</li>
+          <li key={ project.id } onClick={ e => { this.setState({ selected: project.id })}}>
+            <h3>{ project.name }</h3>
+          </li>
         );
       });
     }
@@ -29,12 +31,12 @@ class portfolio extends Component {
     return (
       <div>
         <ul id="book-list">
-          { this.displayBooks() }
+          { this.displayProjects() }
         </ul>
-        <Details bookId={ this.state.selected }/>
+        <Details projectId={ this.state.selected }/>
       </div>
     )
   }
 }
 
-export default graphql(getBooksQuery)(portfolio);
+export default graphql(getProjectsQuery)(portfolio);
