@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 // allows express to understand graphQL. provides simple way for express server to run the graphQL api. we do this by using it as middleware on a single route. this route will be like an endpoint to interact with our graphQL data
 const { graphqlHTTP } = require('express-graphql'); 
 const schema = require('./schema/schema');
 const mongoose = require('mongoose');
 const app = express();
+
+app.use(cors());
 
 mongoose.connect(process.env.MONGODB_URI, { 
   useNewUrlParser: true, 
