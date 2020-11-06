@@ -11,7 +11,7 @@ import NavigatonBar from './components/navigation';
 
 // apollo client setup
 const client = new ApolloClient({
-  uri: 'http://localhost:5000/graphql'
+  uri: '/graphql'
 })
 
 function App() {
