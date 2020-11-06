@@ -5,10 +5,10 @@ function contact() {
   return (
     <Container fluid>
       <Row>
-        <Col xs={2}></Col>
-        <Col xs={8}>
+        <Col xs={3}></Col>
+        <Col xs={6}>
           <Card>
-            <Card.Header> Contact</Card.Header>
+            <Card.Header className="cardHead"> Contact</Card.Header>
             <Card.Body>
               <Form>
                 <Form.Group>
@@ -23,13 +23,13 @@ function contact() {
                   <Form.Label>Message</Form.Label>
                   <Form.Control as="textarea" placeholder="Textarea"></Form.Control>
                 </Form.Group>
-                  <Button>Submit</Button>
+                  <Button className="mr-2">Submit</Button>
                   <Button>Cancel</Button>
               </Form>
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={2}></Col>
+        <Col xs={3}></Col>
       </Row>
           
     </Container>

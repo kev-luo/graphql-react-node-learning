@@ -1,17 +1,22 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo';
 import { getProjectQuery } from '../queries/queries';
+import { Modal } from 'react-bootstrap';
 
 class details extends Component {
+
   displayProjectDetails() {
     const { project } = this.props.data;
     if (project) {
       return(
-        <div>
-          <h2>{ project.name }</h2>
-          <p>{ project.description }</p>
-          <h4>Skills and Other Projects: </h4>
-          <ul>
+        <>
+          <Modal.Header>
+            <Modal.Title>{ project.name }</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>{ project.description }</p>
+            <h6>Skills and Other Projects: </h6>
+            <ul>
             { project.skills.map(skill => {
               if (skill.projects.length > 1) {
                 return (
@@ -36,17 +41,26 @@ class details extends Component {
               }
             }) }
           </ul>
-        </div>
+          </Modal.Body>
+        </>
+      )
+    } else {
+      return(
+        <>
+          <Modal.Header closeButton>
+            <Modal.Title>Project details loading...</Modal.Title>
+          </Modal.Header>
+        </>
       )
     }
   }
 
   render() {
-    console.log(this.props);
+    
     return (
-      <div id="book-details">
+      <>
         { this.displayProjectDetails() }
-      </div>
+      </>
     )
   }
 }

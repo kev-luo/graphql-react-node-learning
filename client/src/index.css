@@ -14,18 +14,6 @@ code {
 }
 
 
-/* <Navbar bg="dark" variant="dark">
-<Navbar.Brand href="#home">Navbar</Navbar.Brand>
-<Nav className="mr-auto">
-  <Nav.Link href="#home">Home</Nav.Link>
-  <Nav.Link href="#features">Features</Nav.Link>
-  <Nav.Link href="#pricing">Pricing</Nav.Link>
-</Nav>
-<Form inline>
-  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-  <Button variant="outline-info">Search</Button>
-</Form>
-</Navbar> */
 
 /* portfolio */
 .container {
@@ -48,8 +36,13 @@ code {
   position: relative;
   left: 0px;
 }
+.portfolioCard h3 {
+  color:#bebcc4;
+  padding-top: 2px;
+  padding-left: 10px;
+}
 .portfolioCard:not(:first-child) {
-  margin-left: -50px;
+  margin-left: -30px;
 }
 
 .portfolioCard:hover {
@@ -62,4 +55,10 @@ cursor: pointer;
 position: relative;
 left: 50px;
 transition: 0.4s ease-out;
+}
+
+
+/* about/contact */
+.cardHead {
+  font-weight: 400;
 }
