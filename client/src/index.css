@@ -13,3 +13,53 @@ code {
     monospace;
 }
 
+
+/* <Navbar bg="dark" variant="dark">
+<Navbar.Brand href="#home">Navbar</Navbar.Brand>
+<Nav className="mr-auto">
+  <Nav.Link href="#home">Home</Nav.Link>
+  <Nav.Link href="#features">Features</Nav.Link>
+  <Nav.Link href="#pricing">Pricing</Nav.Link>
+</Nav>
+<Form inline>
+  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+  <Button variant="outline-info">Search</Button>
+</Form>
+</Navbar> */
+
+/* portfolio */
+.container {
+  position: absolute;
+  height: 300px;
+  width: 600px;
+  top: 60px;
+  left: calc(50% - 300px);
+  display: flex;
+}
+.portfolioCard {
+  display: flex;
+  height: 280px;
+  width: 200px;
+  background-color: #17141d;
+  border-radius: 10px;
+  box-shadow: -1rem 0 3rem #000;
+/*   margin-left: -50px; */
+  transition: 0.4s ease-out;
+  position: relative;
+  left: 0px;
+}
+.portfolioCard:not(:first-child) {
+  margin-left: -50px;
+}
+
+.portfolioCard:hover {
+transform: translateY(-20px);
+transition: 0.4s ease-out;
+cursor: pointer;
+}
+
+.portfolioCard:hover ~ .card {
+position: relative;
+left: 50px;
+transition: 0.4s ease-out;
+}

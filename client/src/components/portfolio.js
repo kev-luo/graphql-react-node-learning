@@ -20,9 +20,9 @@ class portfolio extends Component {
     } else {
       return data.projects.map(project => {
         return (
-          <li key={ project.id } onClick={ e => { this.setState({ selected: project.id })}}>
+          <div className="portfolioCard" key={ project.id } onClick={ e => { this.setState({ selected: project.id })}}>
             <h3>{ project.name }</h3>
-          </li>
+          </div>
         );
       });
     }
@@ -30,9 +30,9 @@ class portfolio extends Component {
   render() {
     return (
       <div>
-        <ul id="book-list">
+        <div className="container">
           { this.displayProjects() }
-        </ul>
+        </div>
         <Details projectId={ this.state.selected }/>
       </div>
     )
